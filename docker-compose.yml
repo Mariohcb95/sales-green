@@ -1,0 +1,106 @@
+# docker compose up --build
+# Senhas: valores padrão SÓ para desenvolvimento local. Para trocar, copie .env.example para .env (não versionado).
+
+x-dotnet-env: &dotnet-env
+  ASPNETCORE_ENVIRONMENT: Production
+  Swagger__Habilitado: "true"
+  ConnectionStrings__RabbitMq: amqp://${RABBITMQ_USER:-salesgreen}:${RABBITMQ_PASSWORD:-salesgreen_dev}@rabbitmq:5672/
+
+x-depends-infra: &depends-infra
+  postgres:
+    condition: service_healthy
+  rabbitmq:
+    condition: service_healthy
+
+services:
+  # ---------------- Infraestrutura ----------------
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-salesgreen}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-salesgreen_dev}
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-salesgreen}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-salesgreen_dev}
+    ports: ["${RABBITMQ_PORT:-5672}:5672", "15672:15672"] # 15672 = painel de gestão
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  cassandra:
+    image: cassandra:5.0
+    environment:
+      MAX_HEAP_SIZE: 512M
+      HEAP_NEWSIZE: 128M
+      CASSANDRA_CLUSTER_NAME: salesgreen
+    ports: ["${CASSANDRA_PORT:-9042}:9042"]
+    volumes: [cassandra-data:/var/lib/cassandra]
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES' > /dev/null 2>&1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 40s
+
+  # ---------------- Serviços ----------------
+  catalogo:
+    build: { context: ., args: { SERVICE_PATH: src/Services/Catalogo/SalesGreen.Catalogo.Api, ASSEMBLY: SalesGreen.Catalogo.Api } }
+    environment:
+      <<: *dotnet-env
+      ConnectionStrings__Catalogo: "Host=postgres;Port=5432;Database=catalogo;Username=${POSTGRES_USER:-salesgreen};Password=${POSTGRES_PASSWORD:-salesgreen_dev}"
+    ports: ["5001:8080"]
+    depends_on: *depends-infra
+
+  pedidos:
+    build: { context: ., args: { SERVICE_PATH: src/Services/Pedidos/SalesGreen.Pedidos.Api, ASSEMBLY: SalesGreen.Pedidos.Api } }
+    environment:
+      <<: *dotnet-env
+      ConnectionStrings__Pedidos: "Host=postgres;Port=5432;Database=pedidos;Username=${POSTGRES_USER:-salesgreen};Password=${POSTGRES_PASSWORD:-salesgreen_dev}"
+      Servicos__CatalogoUrl: http://catalogo:8080/
+    ports: ["5002:8080"]
+    depends_on: *depends-infra
+
+  estoque:
+    build: { context: ., args: { SERVICE_PATH: src/Services/Estoque/SalesGreen.Estoque.Api, ASSEMBLY: SalesGreen.Estoque.Api } }
+    environment:
+      <<: *dotnet-env
+      ConnectionStrings__Estoque: "Host=postgres;Port=5432;Database=estoque;Username=${POSTGRES_USER:-salesgreen};Password=${POSTGRES_PASSWORD:-salesgreen_dev}"
+    ports: ["5003:8080"]
+    depends_on: *depends-infra
+
+  faturamento:
+    build: { context: ., args: { SERVICE_PATH: src/Services/Faturamento/SalesGreen.Faturamento.Api, ASSEMBLY: SalesGreen.Faturamento.Api } }
+    environment:
+      <<: *dotnet-env
+      ConnectionStrings__Faturamento: "Host=postgres;Port=5432;Database=faturamento;Username=${POSTGRES_USER:-salesgreen};Password=${POSTGRES_PASSWORD:-salesgreen_dev}"
+      Faturamento__CenarioTributario: Transicao2026
+    ports: ["5004:8080"]
+    depends_on: *depends-infra
+
+  analises:
+    build: { context: ., args: { SERVICE_PATH: src/Services/Analises/SalesGreen.Analises.Api, ASSEMBLY: SalesGreen.Analises.Api } }
+    environment:
+      <<: *dotnet-env
+      Cassandra__ContactPoints__0: cassandra
+    ports: ["5005:8080"]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      cassandra:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  cassandra-data:

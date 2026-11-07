@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- A Saga é orquestração de caso de uso, por isso mora na Application (e é testável com o test harness em memória). -->
+  <ItemGroup>
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SalesGreen.Pedidos.Domain\SalesGreen.Pedidos.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Contracts\SalesGreen.Contracts\SalesGreen.Contracts.csproj" />
+  </ItemGroup>
+</Project>

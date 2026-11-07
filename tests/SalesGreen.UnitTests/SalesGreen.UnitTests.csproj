@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <PackageReference Include="coverlet.collector" PrivateAssets="all" />
+    <PackageReference Include="FluentAssertions" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Services\Catalogo\SalesGreen.Catalogo.Infrastructure\SalesGreen.Catalogo.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Services\Pedidos\SalesGreen.Pedidos.Application\SalesGreen.Pedidos.Application.csproj" />
+    <ProjectReference Include="..\..\src\Services\Estoque\SalesGreen.Estoque.Application\SalesGreen.Estoque.Application.csproj" />
+    <ProjectReference Include="..\..\src\Services\Faturamento\SalesGreen.Faturamento.Application\SalesGreen.Faturamento.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="FluentAssertions" />
+  </ItemGroup>
+</Project>

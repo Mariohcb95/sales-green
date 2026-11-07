@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Api: composição (DI) e borda HTTP. Controllers finos que delegam para a Application. -->
+  <ItemGroup>
+    <ProjectReference Include="..\SalesGreen.Catalogo.Infrastructure\SalesGreen.Catalogo.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

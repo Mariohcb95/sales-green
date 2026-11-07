@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Shared Kernel: tipos de domínio puros, sem dependência de framework. -->
+</Project>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Infrastructure: detalhes técnicos (EF Core, Dapper, RabbitMQ, leitura de planilhas). Implementa as interfaces do Domain/Application. -->
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SalesGreen.Catalogo.Application\SalesGreen.Catalogo.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\SalesGreen.BuildingBlocks\SalesGreen.BuildingBlocks.csproj" />
+  </ItemGroup>
+</Project>

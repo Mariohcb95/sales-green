@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Application: casos de uso. Orquestra o domínio; depende só de abstrações (repositórios, publicação de eventos). -->
+  <ItemGroup>
+    <PackageReference Include="MassTransit.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SalesGreen.Catalogo.Domain\SalesGreen.Catalogo.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Contracts\SalesGreen.Contracts\SalesGreen.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="SalesGreen.UnitTests" />
+  </ItemGroup>
+</Project>

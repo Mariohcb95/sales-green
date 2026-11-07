@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Domain: regras de negócio puras. Não conhece EF, HTTP nem RabbitMQ. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\SharedKernel\SalesGreen.SharedKernel\SalesGreen.SharedKernel.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!--
+    Serviço de leitura (projeção / read model): não tem regra de domínio, só consome eventos e grava visões
+    otimizadas para consulta. Por isso é um único projeto organizado em pastas, e não 4 camadas (ver ADR 0002).
+  -->
+  <ItemGroup>
+    <PackageReference Include="CassandraCSharpDriver" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\SalesGreen.BuildingBlocks\SalesGreen.BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\..\Contracts\SalesGreen.Contracts\SalesGreen.Contracts.csproj" />
+  </ItemGroup>
+</Project>

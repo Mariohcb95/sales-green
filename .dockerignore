@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+**/TestResults/
+tests/
+docs/
+.git/
+.github/
+.vs/
+.vscode/
+.idea/
+.env
+*.md

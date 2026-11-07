@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  build-test-analise:
+    name: Build, testes e SonarCloud
+    runs-on: ubuntu-latest
+    env:
+      # Configure o secret SONAR_TOKEN no repositório. Sem ele, a análise é pulada e o resto do pipeline roda normalmente.
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'mariohcb95' }}
+      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Mariohcb95_sales-green' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # o Sonar precisa do histórico para "new code"
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-java@v4
+        if: env.SONAR_TOKEN != ''
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Restaurar ferramentas e pacotes
+        run: |
+          dotnet tool restore
+          dotnet restore
+
+      - name: SonarCloud (begin)
+        if: env.SONAR_TOKEN != ''
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin \
+            /k:"$SONAR_PROJECT_KEY" /o:"$SONAR_ORGANIZATION" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" \
+            /d:sonar.exclusions="**/Migrations/**" \
+            /d:sonar.coverage.exclusions="tests/**,**/Program.cs,**/Migrations/**"
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # Os testes de integração usam Testcontainers: o runner do GitHub já tem Docker.
+      - name: Testes (unidade + integração) com cobertura
+        run: >
+          dotnet test --configuration Release --no-build
+          --collect:"XPlat Code Coverage" --results-directory TestResults
+          --logger "trx;LogFilePrefix=resultado"
+          -- DataCollectionRunSettings.DataCollector.Configuration.Format=opencover
+
+      - name: SonarCloud (end)
+        if: env.SONAR_TOKEN != ''
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+
+      - name: Publicar resultados dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-testes
+          path: TestResults/
+
+  docker:
+    name: Build das imagens Docker
+    needs: build-test-analise
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker compose build
+        run: docker compose build

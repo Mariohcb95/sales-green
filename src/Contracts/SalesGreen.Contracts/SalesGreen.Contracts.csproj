@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Contratos de integração (mensagens). Só tipos primitivos: nada de entidades de domínio aqui. -->
+</Project>
