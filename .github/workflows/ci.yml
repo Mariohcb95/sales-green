@@ -16,7 +16,7 @@ jobs:
     env:
       # Configure o secret SONAR_TOKEN no repositório. Sem ele, a análise é pulada e o resto do pipeline roda normalmente.
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'mariohcb95' }}
+      SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'mariohcb95-1' }}
       SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Mariohcb95_sales-green' }}
     steps:
       - uses: actions/checkout@v4
