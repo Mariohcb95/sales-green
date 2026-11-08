@@ -59,7 +59,7 @@ jobs:
           dotnet test --configuration Release --no-build
           --collect:"XPlat Code Coverage" --results-directory TestResults
           --logger "trx;LogFilePrefix=resultado"
-          -- DataCollectionRunSettings.DataCollector.Configuration.Format=opencover
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: SonarCloud (end)
         if: env.SONAR_TOKEN != ''
