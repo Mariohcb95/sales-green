@@ -191,20 +191,21 @@ Para ativar o SonarCloud: importe o repositório em sonarcloud.io, desative a "A
 
 Resumo dos ADRs (detalhes, alternativas e "como defender" em cada arquivo):
 
-| # | Decisão | Em uma frase |
-|---|---|---|
-| [0001](docs/adr/0001-registrar-decisoes-de-arquitetura.md) | Registrar ADRs | O porquê fica versionado junto do código. |
-| [0002](docs/adr/0002-microsservicos-ddd-clean-architecture.md) | Microsserviços + DDD + Clean Architecture | Um serviço por bounded context; domínio isolado de framework; invariantes nos agregados. |
-| [0003](docs/adr/0003-persistencia-postgresql-efcore-dapper.md) | PostgreSQL, EF Core e Dapper | Banco por serviço; EF para escrita com agregados, Dapper para relatórios; concorrência otimista no estoque. |
-| [0004](docs/adr/0004-mensageria-outbox-idempotencia-retry-dlq.md) | Outbox, idempotência, retry e DLQ | Evento gravado na mesma transação do dado; consumidores idempotentes (Inbox + chaves de negócio). |
-| [0005](docs/adr/0005-saga-orquestrada-do-pedido.md) | Saga orquestrada | State machine explícita com compensação (liberar estoque) e eventos duplicados ignorados. |
-| [0006](docs/adr/0006-importacao-assincrona-de-planilhas.md) | Importação assíncrona | 202 + fila; validação do arquivo pelo conteúdo; upsert idempotente por código; relatório de rejeições. |
-| [0007](docs/adr/0007-motor-tributario-no-dominio.md) | Motor tributário | Uma regra por tributo (Strategy); cenários Regime atual, Transição 2026 (CBS/IBS) e Reforma plena. |
-| [0008](docs/adr/0008-resiliencia-http-com-polly.md) | Polly | Timeout, retry com jitter só para erro transitório e circuit breaker; 503 quando o Catálogo cai. |
-| [0009](docs/adr/0009-cassandra-para-analises.md) | Cassandra nas análises | Modelagem query-first; idempotência pela chave; `USING TIMESTAMP` contra eventos fora de ordem; quando *não* usar. |
-| [0010](docs/adr/0010-seguranca-e-observabilidade.md) | Segurança e observabilidade | OWASP (injeção, upload, formula injection, segredos), ProblemDetails, Serilog, health checks. |
-| [0011](docs/adr/0011-estrategia-de-testes.md) | Testes | Domínio com xUnit, saga com test harness, integração com Testcontainers (que acharam 2 bugs reais). |
-| [0012](docs/adr/0012-versoes-e-licencas.md) | Versões e licenças | .NET 10 LTS; MassTransit 8 e FluentAssertions 7 (licenças livres); sem MediatR. |
+| # | Decisão | Em uma frase | Status |
+|---|---|---|---|
+| [0001](docs/adr/0001-registrar-decisoes-de-arquitetura.md) | Registrar ADRs | O porquê fica versionado junto do código. | ✅ Feito |
+| [0002](docs/adr/0002-microsservicos-ddd-clean-architecture.md) | Microsserviços + DDD + Clean Architecture | Um serviço por bounded context; domínio isolado de framework; invariantes nos agregados. | ✅ Feito |
+| [0003](docs/adr/0003-persistencia-postgresql-efcore-dapper.md) | PostgreSQL, EF Core e Dapper | Banco por serviço; EF para escrita com agregados, Dapper para relatórios; concorrência otimista no estoque. | ✅ Feito |
+| [0004](docs/adr/0004-mensageria-outbox-idempotencia-retry-dlq.md) | Outbox, idempotência, retry e DLQ | Evento gravado na mesma transação do dado; consumidores idempotentes (Inbox + chaves de negócio). | ✅ Feito |
+| [0005](docs/adr/0005-saga-orquestrada-do-pedido.md) | Saga orquestrada | State machine explícita com compensação (liberar estoque) e eventos duplicados ignorados. | ✅ Feito |
+| [0006](docs/adr/0006-importacao-assincrona-de-planilhas.md) | Importação assíncrona | 202 + fila; validação do arquivo pelo conteúdo; upsert idempotente por código; relatório de rejeições. | ✅ Feito |
+| [0007](docs/adr/0007-motor-tributario-no-dominio.md) | Motor tributário | Uma regra por tributo (Strategy); cenários Regime atual, Transição 2026 (CBS/IBS) e Reforma plena. | ✅ Feito |
+| [0008](docs/adr/0008-resiliencia-http-com-polly.md) | Polly | Timeout, retry com jitter só para erro transitório e circuit breaker; 503 quando o Catálogo cai. | ✅ Feito |
+| [0009](docs/adr/0009-cassandra-para-analises.md) | Cassandra nas análises | Modelagem query-first; idempotência pela chave; `USING TIMESTAMP` contra eventos fora de ordem; quando *não* usar. | ✅ Feito (experimento) |
+| [0010](docs/adr/0010-seguranca-e-observabilidade.md) | Segurança e observabilidade | OWASP (injeção, upload, formula injection, segredos), ProblemDetails, Serilog, health checks. | ✅ Feito |
+| [0011](docs/adr/0011-estrategia-de-testes.md) | Testes | Domínio com xUnit, saga com test harness, integração com Testcontainers (que acharam 2 bugs reais). | ✅ Feito |
+| [0012](docs/adr/0012-versoes-e-licencas.md) | Versões e licenças | .NET 10 LTS; MassTransit 8 e FluentAssertions 7 (licenças livres); sem MediatR. | ✅ Feito |
+| [0013](docs/adr/0013-entrega-docker-compose-ci-sonarcloud.md) | Entrega e CI | Dockerfile único multi-stage sem root; Compose com healthchecks; CI com Testcontainers e quality gate do SonarCloud. | ✅ Feito |
 
 ## Próximos passos
 
